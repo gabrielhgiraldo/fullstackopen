@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from 'react'
+import axios from 'axios'
 
-function App() {
+import Countries from './components/Countries'
+import Search from './components/Search'
+
+const App = () => {
+  const [ searchQuery, setSearchQuery ] = useState('')
+  const [ countries, setCountries ] = useState([])
+  
+  const countriesToShow = searchQuery.length 
+  ? countries.filter(country => country.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  : []
+
+  const handleSearchChange = event => setSearchQuery(event.target.value)
+
+  useEffect(() => {
+    axios
+      .get('https://restcountries.eu/rest/v2/all')
+      .then(response => {
+        setCountries(response.data)
+      })
+  },[])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Search searchQuery={searchQuery} handleSearchChange={handleSearchChange}></Search>
+      <Countries countries={countriesToShow}></Countries>
     </div>
-  );
+  )
 }
-
 export default App;
