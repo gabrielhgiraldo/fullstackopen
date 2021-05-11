@@ -13,6 +13,7 @@ const App = () => {
   : []
 
   const handleSearchChange = event => setSearchQuery(event.target.value)
+  const showCountry = country => setSearchQuery(country)
 
   useEffect(() => {
     axios
@@ -25,7 +26,7 @@ const App = () => {
   return (
     <div>
       <Search searchQuery={searchQuery} handleSearchChange={handleSearchChange}></Search>
-      <Countries countries={countriesToShow}></Countries>
+      <Countries countries={countriesToShow} showCountry={showCountry}></Countries>
     </div>
   )
 }
