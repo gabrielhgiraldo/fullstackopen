@@ -12,7 +12,7 @@ const App = () => {
   const [ nameFilter, setNameFilter ] = useState('')
 
   useEffect(() => {
-      personService
+    personService
       .getAll()
       .then(response => {
         setPersons(response.data)
@@ -25,22 +25,34 @@ const App = () => {
 
   const addNewPerson = (event) => {
     event.preventDefault()
+    let newPerson = {
+      name:newName,
+      number:newNumber
+    }
     if (!persons.some(person => person.name.toLowerCase() === newName.toLowerCase())){
-      const newPerson = {
-        name:newName,
-        number:newNumber
-      }
       personService
-      .create(newPerson)
-      .then(
-        response => setPersons(persons.concat(response.data)),
-        () => console.log('failed to add person')
-      )
+        .create(newPerson)
+        .then(
+          response => setPersons(persons.concat(response.data)),
+          () => console.log('failed to add person')
+        )
     }
-    else{
-      window.alert(`${newName} is already added to phonebook`)
+    else {
+      newPerson = {...newPerson, id:persons.find(person => person.name === newPerson.name).id}
+      const msg = `${newPerson.name} is already added to the phonebook, replace the old number with a new one?`
+      if (window.confirm(msg)){
+          personService
+            .update(newPerson)
+            .then(
+              () => {
+                const updatedPersons = persons.map(person => person.id == newPerson.id ? newPerson : person)
+                setPersons(updatedPersons)
+              },
+              () => console.log('failed to update person')
+            )
+        }
     }
-
+   
     setNewName('')
     setNewNumber('')
   }
