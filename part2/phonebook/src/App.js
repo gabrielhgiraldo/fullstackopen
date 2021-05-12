@@ -23,14 +23,16 @@ const App = () => {
     ? persons.filter(person => person.name.toLowerCase().includes(nameFilter.toLowerCase()))
     : persons
 
-  const addNewName = (event) => {
+  const addNewPerson = (event) => {
     event.preventDefault()
     if (!persons.some(person => person.name.toLowerCase() === newName.toLowerCase())){
-      const person = {
+      const newPerson = {
         name:newName,
         number:newNumber
       }
-      setPersons(persons.concat(person))
+      axios
+      .post('http://localhost:3001/persons', newPerson)
+      .then(() => setPersons(persons.concat(newPerson)),() => console.log('failed to add person'))
     }
     else{
       window.alert(`${newName} is already added to phonebook`)
@@ -48,7 +50,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter nameFilter={nameFilter} handleFilterChange={handleFilterChange}></Filter>
       <h2>add a new</h2>
-      <PersonForm newName={newName} addNewName={addNewName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}></PersonForm>
+      <PersonForm newName={newName} addNewPerson={addNewPerson} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}></PersonForm>
       <h2>Numbers</h2>
       <Persons personsToShow={personsToShow}></Persons>
     </div>
