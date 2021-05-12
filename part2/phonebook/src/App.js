@@ -32,7 +32,10 @@ const App = () => {
       }
       personService
       .create(newPerson)
-      .then(() => setPersons(persons.concat(newPerson)),() => console.log('failed to add person'))
+      .then(
+        response => setPersons(persons.concat(response.data)),
+        () => console.log('failed to add person')
+      )
     }
     else{
       window.alert(`${newName} is already added to phonebook`)
@@ -41,6 +44,18 @@ const App = () => {
     setNewName('')
     setNewNumber('')
   }
+
+  const removePerson = (personToRemove) => {
+    if(window.confirm(`remove ${personToRemove.name}?`)){
+      personService
+        .remove(personToRemove.id)
+        .then(
+          () => setPersons(persons.filter(person => person.id !== personToRemove.id)),
+          () => console.log(`failed to remove ${personToRemove.name}`)
+        )
+    }
+  }
+
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNumberChange = (event) => setNewNumber(event.target.value)
   const handleFilterChange = (event) => setNameFilter(event.target.value)
@@ -50,9 +65,15 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter nameFilter={nameFilter} handleFilterChange={handleFilterChange}></Filter>
       <h2>add a new</h2>
-      <PersonForm newName={newName} addNewPerson={addNewPerson} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}></PersonForm>
+      <PersonForm 
+        newName={newName} 
+        addNewPerson={addNewPerson} 
+        handleNameChange={handleNameChange} 
+        newNumber={newNumber} 
+        handleNumberChange={handleNumberChange}>
+      </PersonForm>
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow}></Persons>
+      <Persons personsToShow={personsToShow} removePerson={removePerson}></Persons>
     </div>
   )
 }
