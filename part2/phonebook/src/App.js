@@ -66,9 +66,15 @@ const App = () => {
                 setTimeout(() => {
                   setNotification(null) 
                 }, 5000)
-              },
-              () => console.log('failed to update person')
+              }
             )
+            .catch(error => {
+              setNotification({
+                message: `Information of ${newPerson.name} has already been removed from server`,
+                type:'error'
+              })
+              setPersons(persons.filter(person => person.id !== newPerson.id))
+            })
         }
     }
    
