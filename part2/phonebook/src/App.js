@@ -57,7 +57,7 @@ const App = () => {
             .update(newPerson)
             .then(
               () => {
-                const updatedPersons = persons.map(person => person.id == newPerson.id ? newPerson : person)
+                const updatedPersons = persons.map(person => person.id === newPerson.id ? newPerson : person)
                 setPersons(updatedPersons)
                 setNotification({
                   message:`updated ${newPerson.name}`,
