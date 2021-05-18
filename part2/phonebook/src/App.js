@@ -35,19 +35,25 @@ const App = () => {
     if (!persons.some(person => person.name.toLowerCase() === newName.toLowerCase())){
       personService
         .create(newPerson)
-        .then(
-          response => {
-            setPersons(persons.concat(response.data))
-            setNotification({
-              message:`added ${newPerson.name}`,
-              type:"success"
-            })
-            setTimeout(() => {
-              setNotification(null) 
-            }, 5000)
-          },
-          () => console.log('failed to add person')
-        )
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNotification({
+            message:`added ${newPerson.name}`,
+            type:"success"
+          })
+          setTimeout(() => {
+            setNotification(null) 
+          }, 5000)
+        })
+        .catch(error => {
+          setNotification({
+            message: error.response.data.error,
+            type:'error'
+          })
+          setTimeout(() => {
+            setNotification(null) 
+          }, 5000)
+        })
     }
     else {
       newPerson = {...newPerson, id:persons.find(person => person.name === newPerson.name).id}
@@ -69,11 +75,25 @@ const App = () => {
               }
             )
             .catch(error => {
-              setNotification({
-                message: `Information of ${newPerson.name} has already been removed from server`,
-                type:'error'
-              })
-              setPersons(persons.filter(person => person.id !== newPerson.id))
+              if (error.response.data.error){
+                setNotification({
+                  message: error.response.data.error,
+                  type:'error'
+                })
+                setTimeout(() => {
+                  setNotification(null) 
+                }, 5000)
+              }
+              else{
+                setNotification({
+                  message: `Information of ${newPerson.name} has already been removed from server`,
+                  type:'error'
+                })
+                setTimeout(() => {
+                  setNotification(null) 
+                }, 5000)
+                setPersons(persons.filter(person => person.id !== newPerson.id))
+              }
             })
         }
     }

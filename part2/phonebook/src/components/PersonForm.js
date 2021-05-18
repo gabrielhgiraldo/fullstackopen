@@ -7,7 +7,7 @@ const PersonForm = ({addNewPerson, handleNameChange, newNumber, newName, handleN
             name: <input value={newName} onChange={handleNameChange}/>
         </div>
         <div>
-            number: <input type='tel' pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value={newNumber} onChange={handleNumberChange}/>
+            number: <input value={newNumber} onChange={handleNumberChange}/>
         </div>
 
         <div>
