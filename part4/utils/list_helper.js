@@ -42,10 +42,41 @@ const mostBlogs = blogs => {
     }, { author: '', blogs: 0 })
 }
 
+const mostLikes = blogs => {
+    if (blogs.length === 0) {
+        return undefined
+    }
+    if (blogs.length === 1) {
+        return {
+            author: blogs[0].author,
+            likes: blogs[0].likes
+        }
+    }
+    const authorLikes = {}
+
+    return blogs.reduce((mostLikedAuthor, blog) => {
+        console.log(authorLikes)
+        authorLikes[blog.author] = authorLikes[blog.author]
+        ? authorLikes[blog.author] + blog.likes
+        : blog.likes
+
+        if (authorLikes[blog.author] > mostLikedAuthor.likes) {
+            return {
+                author: blog.author,
+                likes: authorLikes[blog.author]
+            }
+        }
+        else {
+            return mostLikedAuthor
+        }
+    }, { author: '', likes: 0})
+}
+
 module.exports = {
     dummy,
     favoriteBlog,
     mostBlogs,
+    mostLikes,
     totalLikes
 }
 
