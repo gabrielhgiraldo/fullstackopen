@@ -1,9 +1,15 @@
+require('dotenv')
+
 const info = (...params) => {
-  console.log(...params)
+  if (process.env.NODE_ENV != 'TEST'){
+    console.log(...params)
+  }
 }
 
 const error = (...params) => {
-  console.error(...params)
+  if (process.env.NODE_ENV != 'TEST'){
+    console.error(...params)
+  }
 }
 
 module.exports = {
