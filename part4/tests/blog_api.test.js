@@ -95,7 +95,26 @@ test('new blog is created with post request', async () => {
             expect.objectContaining(newBlog)
         ])
     )
+})
 
+test('likes defaults to 0 if missing from request body on creation', async () => {
+    const newBlog = {
+        title: 'i am a test blog, delete me.',
+        url:'https://testblog.com',
+        author: 'sample mcSamplesteen',
+    }
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    expect(response.body).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({...newBlog, likes:0})
+        ])
+    )
 })
 afterAll(() => {
     mongoose.connection.close()
