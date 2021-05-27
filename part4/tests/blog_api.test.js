@@ -151,6 +151,18 @@ test('blog deleted with valid id', async () => {
         .expect(204)
 })
 
+test('update blogs successful', async () => {
+    const blogID = "5a422a851b54a676234d17f7"
+    const blogUpdate = {
+        likes:1000
+    }
+    const response = await api
+        .put(`/api/blogs/${blogID}`)
+        .send(blogUpdate)
+        .expect(200)
+    
+    expect(response.body).toMatchObject(blogUpdate)
+})
 afterAll(() => {
     mongoose.connection.close()
 })
