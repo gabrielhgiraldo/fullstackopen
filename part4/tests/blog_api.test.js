@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+const blog = require('../models/blog')
 const api = supertest(app)
 const Blog = require('../models/blog')
 const initialBlogs = [
@@ -142,6 +143,14 @@ test('blog creation without url or title returns 400', async () => {
         .send(noTitleBlog)
         .expect(400)
 })
+
+test('blog deleted with valid id', async () => {
+    const blogID = "5a422a851b54a676234d17f7"
+    await api
+        .delete(`/api/blogs/${blogID}`)
+        .expect(204)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
