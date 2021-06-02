@@ -154,7 +154,7 @@ test('blog deleted with valid id', async () => {
 test('update blogs successful', async () => {
     const blogID = "5a422a851b54a676234d17f7"
     const blogUpdate = {
-        likes:1000
+        likes: 1000
     }
     const response = await api
         .put(`/api/blogs/${blogID}`)
