@@ -5,6 +5,13 @@ const User = require('../models/user')
 usersRouter.post('/', async (request, response) => {
     const body = request.body
 
+    if (!body.password) {
+        return response.status(400).send({ error: 'password is required' })
+    }
+    if (body.password.length < 3) {
+        return response.status(400).send({ error: 'password must be longer than 2 characters' })
+    }
+
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(body.password, saltRounds)
 
@@ -13,7 +20,6 @@ usersRouter.post('/', async (request, response) => {
         name: body.name,
         passwordHash
     })
-
     const savedUser = await user.save()
     response.status(201).json(savedUser)
 })
