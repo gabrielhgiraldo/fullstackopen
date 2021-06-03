@@ -55,7 +55,6 @@ const mostLikes = blogs => {
     const authorLikes = {}
 
     return blogs.reduce((mostLikedAuthor, blog) => {
-        console.log(authorLikes)
         authorLikes[blog.author] = authorLikes[blog.author]
         ? authorLikes[blog.author] + blog.likes
         : blog.likes
