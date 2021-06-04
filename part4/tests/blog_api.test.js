@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const blog = require('../models/blog')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
 const initialBlogs = [
     {
         _id: "5a422a851b54a676234d17f7",
@@ -54,11 +55,23 @@ const initialBlogs = [
         __v: 0
     }
 ]
+
+const login = async () => {
+    const response = await api
+        .post('/api/login')
+        .send({ username: 'sampleUser0', password: '123'})
+    return response.body.token
+}
+
 beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
     const blogObjects = initialBlogs.map(blog => new Blog(blog))
     const blogSavePromises = blogObjects.map(blog => blog.save())
     await Promise.all(blogSavePromises)
+    await api
+        .post('/api/users')
+        .send({ username: 'sampleUser0', password: '123' })
 })
 
 test('blogs are returned as json', async () => {
@@ -75,6 +88,8 @@ test('blog posts unique identifier is named id', async () => {
 
 
 test('new blog is created with post request', async () => {
+    const token = await login()
+
     const newBlog = {
         title: 'i am a test blog, delete me.',
         url: 'https://testblog.com',
@@ -83,6 +98,7 @@ test('new blog is created with post request', async () => {
     }
     await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -99,6 +115,8 @@ test('new blog is created with post request', async () => {
 })
 
 test('likes defaults to 0 if missing from request body on creation', async () => {
+    const token = await login()
+
     const newBlog = {
         title: 'i am a test blog, delete me.',
         url: 'https://testblog.com',
@@ -106,6 +124,7 @@ test('likes defaults to 0 if missing from request body on creation', async () =>
     }
     await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -122,6 +141,7 @@ test('likes defaults to 0 if missing from request body on creation', async () =>
 })
 
 test('blog creation without url or title returns 400', async () => {
+    const token = await login()
     const noURLBlog = {
         title: 'i am a test blog, delete me.',
         url: undefined,
@@ -136,18 +156,31 @@ test('blog creation without url or title returns 400', async () => {
     }
     await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(noURLBlog)
         .expect(400)
     await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
         .send(noTitleBlog)
         .expect(400)
 })
 
+test('blog creation fails with proper status code if no token provided', async () => {
+    const response = await api
+        .post('/api/blogs')
+        .send(initialBlogs[0])
+        .expect(401)
+
+    expect(response.body.error).toContain('invalid token')
+})
+
 test('blog deleted with valid id', async () => {
+    const token = await login()
     const blogID = "5a422a851b54a676234d17f7"
     await api
         .delete(`/api/blogs/${blogID}`)
+        .set('Authorization', `bearer ${token}`)
         .expect(204)
 })
 
