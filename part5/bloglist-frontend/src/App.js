@@ -75,8 +75,19 @@ const App = () => {
     setBlogs([
       ...blogs.slice(0, blogIndex),
       updatedBlog,
-      ...blogs.slice(blogIndex)
+      ...blogs.slice(blogIndex + 1)
     ])
+  }
+
+  const removeBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      await blogService.deleteBlog(blog.id, user.token)
+      const blogIndex = blogs.findIndex(currentBlog => currentBlog.id === blog.id)
+      setBlogs([
+        ...blogs.slice(0, blogIndex),
+        ...blogs.slice(blogIndex + 1)
+      ])
+    }
   }
 
   if (user === null) {
@@ -93,6 +104,7 @@ const App = () => {
       </div>
     )
   }
+
   return (
     <div>
       <Notification notification={notification}/>
@@ -107,7 +119,13 @@ const App = () => {
         />
       </Togglable>
       {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={likeBlog}/>
+        <Blog 
+          key={blog.id}
+          blog={blog}
+          likeBlog={likeBlog}
+          removeBlog={removeBlog}
+          allowRemove={blog.user ? user.username === blog.user.username : false}
+          />
       )}
     </div>
   )
