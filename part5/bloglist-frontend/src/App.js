@@ -62,6 +62,23 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
   }
 
+  const likeBlog = async (blog) => {
+    const blogUpdate = {
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+      user: blog.user ? blog.user.id : undefined,
+      likes: blog.likes + 1
+    }
+    const updatedBlog = await blogService.updateBlog(blog.id, blogUpdate)
+    const blogIndex = blogs.findIndex(currentBlog => currentBlog.id === blog.id)
+    setBlogs([
+      ...blogs.slice(0, blogIndex),
+      updatedBlog,
+      ...blogs.slice(blogIndex)
+    ])
+  }
+  
   if (user === null) {
     return (
       <div>
@@ -90,7 +107,7 @@ const App = () => {
         />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} likeBlog={likeBlog}/>
       )}
     </div>
   )
