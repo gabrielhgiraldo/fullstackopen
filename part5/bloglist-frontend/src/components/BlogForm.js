@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const CreateBlogForm = ({
-    handleSubmit,
-    handleTitleChange,
-    handleAuthorChange,
-    handleUrlChange,
-    title,
-    author,
-    url
-}) => {
+const CreateBlogForm = ({ createBlog }) => {
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        await createBlog({ url, author, title })
+        setUrl('')
+        setAuthor('')
+        setTitle('')
+    }
+
     return (
         <div>
             <h2>create new</h2>
@@ -19,7 +23,7 @@ const CreateBlogForm = ({
                 type='text'
                 name='title'
                 value={title}
-                onChange={handleTitleChange}/>
+                onChange={({ target }) => setTitle(target.value)}/>
             </div>
             <div>
                 author:
@@ -27,7 +31,7 @@ const CreateBlogForm = ({
                 type='text'
                 name='author'
                 value={author}
-                onChange={handleAuthorChange}/>
+                onChange={({ target }) => setAuthor(target.value)}/>
             </div>
             <div>
                 url:
@@ -35,7 +39,7 @@ const CreateBlogForm = ({
                 type='text'
                 name='url'
                 value={url}
-                onChange={handleUrlChange}/>
+                onChange={({ target }) => setUrl(target.value)}/>
             </div>
             <button>create</button>
             </form>
