@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
-
-const Blog = ({blog, likeBlog, removeBlog, allowRemove}) => {
+const Blog = ({ blog, likeBlog, removeBlog, allowRemove }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -13,10 +12,10 @@ const Blog = ({blog, likeBlog, removeBlog, allowRemove}) => {
 
   const [visible, setVisible] = useState(false)
   const buttonLabel = visible ? 'hide' : 'view'
-  const showWhenVisible = { display: visible ? '' : 'none' }  
+  const showWhenVisible = { display: visible ? '' : 'none' }
   const toggleVisibility = () => setVisible(!visible)
 
-  const showRemove = { display: allowRemove ? '' : 'none'}
+  const showRemove = { display: allowRemove ? '' : 'none' }
 
   return (
     <div style={blogStyle}>

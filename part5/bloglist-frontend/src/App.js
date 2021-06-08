@@ -18,7 +18,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -39,15 +39,15 @@ const App = () => {
       setUsername('')
       setPassword('')
     }
-    catch {
-      setNotification({ type: 'error', message: 'wrong username or password'})
+    catch (error){
+      setNotification({ type: 'error', message: 'wrong username or password' })
       setTimeout(() => {
         setNotification(null)
       }, 5000)
     }
   }
 
-  const handleLogout = (event) => {
+  const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem('user')
   }
@@ -110,8 +110,8 @@ const App = () => {
       <Notification notification={notification}/>
       <h2>blogs</h2>
       <p>{
-        user.name} logged in  
-        <button onClick={handleLogout}>logout</button>
+        user.name} logged in
+      <button onClick={handleLogout}>logout</button>
       </p>
       <Togglable buttonLabel='create new blog' ref={blogFormRef}>
         <BlogForm
@@ -119,13 +119,13 @@ const App = () => {
         />
       </Togglable>
       {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-        <Blog 
+        <Blog
           key={blog.id}
           blog={blog}
           likeBlog={likeBlog}
           removeBlog={removeBlog}
           allowRemove={blog.user ? user.username === blog.user.username : false}
-          />
+        />
       )}
     </div>
   )
