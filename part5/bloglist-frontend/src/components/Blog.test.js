@@ -1,6 +1,6 @@
 import React from 'react'
 import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import Blog from './Blog'
 
 describe('<Blog/>', () => {
@@ -29,9 +29,18 @@ describe('<Blog/>', () => {
     expect(component.container).toHaveTextContent(blog.title)
   })
 
-  test('url and likes are not displayed by default', () => {
+  test('details (url and likes) are not displayed by default', () => {
     const details = component.container.querySelector('.details')
     expect(details).toHaveStyle('display: none')
+    expect(details).toHaveTextContent(blog.url)
+    expect(details).toHaveTextContent(blog.likes)
+  })
+
+  test('after clicking the button, details(url and likes) are displayed', () => {
+    const button = component.getByText('view')
+    fireEvent.click(button)
+    const details = component.container.querySelector('.details')
+    expect(details).not.toHaveStyle('display: none')
     expect(details).toHaveTextContent(blog.url)
     expect(details).toHaveTextContent(blog.likes)
   })
