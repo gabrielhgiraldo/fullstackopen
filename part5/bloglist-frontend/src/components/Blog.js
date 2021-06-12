@@ -18,7 +18,7 @@ const Blog = ({ blog, likeBlog, removeBlog, allowRemove }) => {
   const showRemove = { display: allowRemove ? '' : 'none' }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div>
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>{buttonLabel}</button>

@@ -36,4 +36,28 @@ describe('Blog app', function() {
       cy.get('html').should('not.contain', 'logged in')
     })
   })
+
+  describe('when logged in', function() {
+    beforeEach(async function() {
+      const response = await cy.request('POST', 'http://localhost:3003/api/login', {
+        username: 'testUser',
+        password: '123'
+      })
+      localStorage.setItem('user', JSON.stringify(response.body))
+      cy.visit('http://localhost:3000')
+    })
+    it('a blog can be created', function() {
+      cy.contains('create new blog').click()
+      cy.get('#title').type('new blog')
+      cy.get('#author').type('bob')
+      cy.get('#url').type('www.blog.com')
+
+      cy.get('#create-blog').click()
+      cy.get('.success')
+        .contains('a new blog new blog by bob added')
+      cy.get('.blog')
+        .should('contain', 'new blog')
+        .and('contain', 'bob')
+    })
+  })
 })
