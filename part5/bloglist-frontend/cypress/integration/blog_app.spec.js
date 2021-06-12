@@ -64,35 +64,54 @@ describe('Blog app', function() {
         .and('contain', 'bob')
     })
 
-    describe('and a blog exists', function() {
+    describe('and multiple blogs exist', function() {
       beforeEach(function(){
-        cy.request({
-          method: 'POST',
-          url: 'http://localhost:3003/api/blogs',
-          body: {
-            title: 'new blog',
-            author: 'bob',
-            url: 'www.blog.com'
-          },
-          headers: {
-            Authorization: `bearer ${JSON.parse(localStorage.getItem('user')).token}`
-          }
-        })
-        cy.visit('http://localhost:3000')
+        cy.createBlog({ title: 'new blog', author: 'bob', url: 'www.blog.com', likes: 2 })
+        cy.createBlog({ title: 'new blog 2', author: 'bob 2', url: 'www.blog.com', likes: 4 })
+        cy.createBlog({ title: 'new blog 3', author: 'bob 3', url: 'www.blog.com', likes: 1 })
       })
 
       it('a blog can be liked', function() {
-        cy.contains('view').click()
-        cy.get('.details')
+        cy.contains('new blog bob')
+          .contains('view')
+          .click()
+        cy.contains('new blog bob')
+          .parent()
           .contains('like')
           .click()
-        cy.get('.details').contains('likes 1')
+        cy.contains('new blog bob')
+          .parent()
+          .contains('likes 3')
       })
 
       it('user who created blog can delete it', function() {
-        cy.contains('view').click()
-        cy.contains('remove').click()
-        cy.get('.blog').should('not.exist')
+        cy.contains('new blog bob')
+          .contains('view')
+          .click()
+        cy.contains('new blog bob')
+          .parent()
+          .contains('remove')
+          .click()
+        cy.contains('new blog bob').should('not.exist')
+      })
+
+      it('blogs are sorted by likes', function() {
+        cy.get('.blog')
+          .then(blogs => {
+            let prevLikes = Number.MAX_VALUE
+            for (const blog of blogs) {
+              // console.log(blog)
+              cy.wrap(blog)
+                .contains('like')
+                .parent()
+                .invoke('text')
+                .then(text => {
+                  const numLikes = parseFloat(text.match(/\d+/)[0])
+                  cy.wrap(numLikes).should('be.lt', prevLikes)
+                  prevLikes = numLikes
+                })
+            }
+          })
       })
     })
   })
