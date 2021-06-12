@@ -38,14 +38,16 @@ describe('Blog app', function() {
   })
 
   describe('when logged in', function() {
-    beforeEach(async function() {
-      const response = await cy.request('POST', 'http://localhost:3003/api/login', {
+    beforeEach(function() {
+      cy.request('POST', 'http://localhost:3003/api/login', {
         username: 'testUser',
         password: '123'
+      }).then(response => {
+        localStorage.setItem('user', JSON.stringify(response.body))
+        cy.visit('http://localhost:3000')
       })
-      localStorage.setItem('user', JSON.stringify(response.body))
-      cy.visit('http://localhost:3000')
     })
+
     it('a blog can be created', function() {
       cy.contains('create new blog').click()
       cy.get('#title').type('new blog')
@@ -58,6 +60,31 @@ describe('Blog app', function() {
       cy.get('.blog')
         .should('contain', 'new blog')
         .and('contain', 'bob')
+    })
+
+    describe('and a blog exists', function() {
+      beforeEach(function(){
+        cy.request({
+          method:'POST',
+          url:'http://localhost:3003/api/blogs',
+          body: {
+            title: 'new blog',
+            author: 'bob',
+            url: 'www.blog.com'
+          },
+          headers: {
+            Authorization: `bearer ${JSON.parse(localStorage.getItem('user')).token}`
+          }
+        })
+        cy.visit('http://localhost:3000')
+      })
+      it('a blog can be liked', function() {
+        cy.contains('view').click()
+        cy.get('.details')
+          .contains('like')
+          .click()
+        cy.get('.details').contains('likes 1')
+      })
     })
   })
 })
