@@ -3,6 +3,7 @@ describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
     cy.request('POST', 'http://localhost:3003/api/users', {
+      name: 'test user',
       username: 'testUser',
       password: '123'
     })
@@ -40,6 +41,7 @@ describe('Blog app', function() {
   describe('when logged in', function() {
     beforeEach(function() {
       cy.request('POST', 'http://localhost:3003/api/login', {
+        name: 'test user',
         username: 'testUser',
         password: '123'
       }).then(response => {
@@ -65,8 +67,8 @@ describe('Blog app', function() {
     describe('and a blog exists', function() {
       beforeEach(function(){
         cy.request({
-          method:'POST',
-          url:'http://localhost:3003/api/blogs',
+          method: 'POST',
+          url: 'http://localhost:3003/api/blogs',
           body: {
             title: 'new blog',
             author: 'bob',
@@ -78,12 +80,19 @@ describe('Blog app', function() {
         })
         cy.visit('http://localhost:3000')
       })
+
       it('a blog can be liked', function() {
         cy.contains('view').click()
         cy.get('.details')
           .contains('like')
           .click()
         cy.get('.details').contains('likes 1')
+      })
+
+      it('user who created blog can delete it', function() {
+        cy.contains('view').click()
+        cy.contains('remove').click()
+        cy.get('.blog').should('not.exist')
       })
     })
   })
