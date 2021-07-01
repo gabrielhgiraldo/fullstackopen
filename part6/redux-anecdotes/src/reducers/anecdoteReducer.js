@@ -25,16 +25,18 @@ const reducer = (state = initialState, action) => {
   switch(action.type) {
     case 'VOTE':
       const anecdoteIndex = state.findIndex(anecdote => anecdote.id === action.data.id)
-      return [
+      state =  [
         ...state.slice(0, anecdoteIndex),
         { ...state[anecdoteIndex], votes: state[anecdoteIndex].votes + 1 },
         ...state.slice(anecdoteIndex + 1)
       ]
+      break
     case 'NEW_ANECDOTE':
-      return [...state, action.data]
+      state = [...state, action.data]
+      break
     default:
-      return state
   }
+  return state.sort((a, b) => b.votes - a.votes)
 }
 
 export const voteAnecdote = (id) => {
