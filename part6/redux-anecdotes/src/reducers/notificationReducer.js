@@ -1,21 +1,20 @@
-const notificationReducer = (state, action) => {
-    if (action.type === 'MESSAGE'){
-      return action.data
+const notificationReducer = (state='', action) => {
+    if(action.type === 'MESSAGE'){
+        return action.data
     }
-    return ''
+    return state
 }
 
-export const notifyMessage = (message) => {
-  return {
-    type: 'MESSAGE',
-    data: message
-  }
-}
-
-export const removeNotification = () => {
-  return {
-    type: 'MESSAGE',
-    data: ''
+export const setNotification = (message, seconds) => {
+  return async dispatch => {
+    dispatch({
+      type: 'MESSAGE',
+      data: message
+    })
+    setTimeout(() => dispatch({
+      type: 'MESSAGE',
+      data: ''
+    }), seconds * 1000)
   }
 }
 
