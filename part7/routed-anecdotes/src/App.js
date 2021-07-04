@@ -3,6 +3,7 @@ import {
   Link,
   Route,
   Switch,
+  useHistory,
   useRouteMatch
  } from 'react-router-dom'
 
@@ -58,7 +59,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
-
+  const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -68,6 +69,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    history.push('/')
   }
 
   return (
@@ -103,6 +105,20 @@ const Anecdote = ({ anecdote }) => {
   )
 }
 
+const Notification = ({ notification }) => {
+  const style = {
+    border: 'solid',
+    padding: 10,
+    borderWidth: 1
+  }
+  if (notification){
+    return (
+      <div style={style}>{notification}</div>
+    )
+  }
+  return null
+}
+
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -126,6 +142,8 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`anecdote ${anecdote.content} by ${anecdote.author} added`)
+    setTimeout(() => setNotification(''), 10000)
   }
 
   const anecdoteById = (id) =>
@@ -149,25 +167,26 @@ const App = () => {
   
   return (
     <div>
+      <Notification notification={notification}></Notification>
       <h1>Software anecdotes</h1>
-        <Menu />
-        <Switch>
-          <Route path="/anecdotes/:id">
-            <Anecdote anecdote={anecdote}></Anecdote>
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/create">
-            <CreateNew addNew={addNew} />
-          </Route>
-          <Route path="/anecdotes/:id">
-            <Anecdote></Anecdote>
-          </Route>
-          <Route path="/">
-            <AnecdoteList anecdotes={anecdotes} />
-          </Route>
-        </Switch>
+      <Menu />
+      <Switch>
+        <Route path="/anecdotes/:id">
+          <Anecdote anecdote={anecdote}></Anecdote>
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/create">
+          <CreateNew addNew={addNew} />
+        </Route>
+        <Route path="/anecdotes/:id">
+          <Anecdote></Anecdote>
+        </Route>
+        <Route path="/">
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
       <Footer />
     </div>
   )
