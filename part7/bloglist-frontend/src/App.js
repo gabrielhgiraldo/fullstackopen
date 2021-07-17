@@ -3,12 +3,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
-import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
-import { createBlog, initializeBlogs } from './reducers/blogReducer'
+import { createBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -57,32 +56,9 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
   }
 
-  const likeBlog = async (blog) => {
-    console.log(blog)
-    // const blogUpdate = {
-    //   author: blog.author,
-    //   title: blog.title,
-    //   url: blog.url,
-    //   user: blog.user ? blog.user.id : undefined,
-    //   likes: blog.likes + 1
-    // }
-    // const updatedBlog = await blogService.updateBlog(blog.id, blogUpdate)
-    // const blogIndex = blogs.findIndex(currentBlog => currentBlog.id === blog.id)
-    // setBlogs([
-    //   ...blogs.slice(0, blogIndex),
-    //   updatedBlog,
-    //   ...blogs.slice(blogIndex + 1)
-    // ])
-  }
-
   const removeBlog = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.deleteBlog(blog.id, user.token)
-      // const blogIndex = blogs.findIndex(currentBlog => currentBlog.id === blog.id)
-      // setBlogs([
-      //   ...blogs.slice(0, blogIndex),
-      //   ...blogs.slice(blogIndex + 1)
-      // ])
+      dispatch(deleteBlog(blog, user.token))
     }
   }
 
@@ -117,7 +93,7 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          likeBlog={likeBlog}
+          likeBlog={() => dispatch(likeBlog(blog))}
           removeBlog={removeBlog}
           allowRemove={blog.user ? user.username === blog.user.username : false}
         />
