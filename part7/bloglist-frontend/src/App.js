@@ -3,20 +3,21 @@ import { useSelector, useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
-import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
 import { createBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
+import { setUser, login } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
+  const notification = useSelector(state => state.notification)
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
-  const notification = useSelector(state => state.notification)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -25,7 +26,7 @@ const App = () => {
   useEffect(() => {
     const userString = window.localStorage.getItem('user')
     if (userString) {
-      setUser(JSON.parse(userString))
+      dispatch(setUser(JSON.parse(userString)))
     }
   }, [])
 
@@ -34,9 +35,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({ username, password })
-      setUser(user)
-      window.localStorage.setItem('user', JSON.stringify(user))
+      dispatch(login(username, password))
       setUsername('')
       setPassword('')
     }
@@ -46,7 +45,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    setUser(null)
+    dispatch(setUser(null))
     window.localStorage.removeItem('user')
   }
 
