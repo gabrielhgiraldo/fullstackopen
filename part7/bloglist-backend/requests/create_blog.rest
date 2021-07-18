@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbXBsZVVzZXIxIiwiaWQiOiI2MGJhM2U3MmE5NWY5MDIzNmM1YzQ5YjIiLCJpYXQiOjE2MjI4MTg0NDh9.sKYFbWyMoPQz8uYx94JmLoYyYYdwdLQ4XxC-Th-pFQY
+
+{
+  "title": "test blog",
+  "author": "sample mcsamplesteen",
+  "url": "www.testblog.com",
+  "likes": "0"
+}
