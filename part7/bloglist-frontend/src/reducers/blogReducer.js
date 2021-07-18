@@ -15,11 +15,20 @@ const blogReducer = (state = [], action) => {
         ...state.slice(blogIndex + 1)
       ]
     }
-    case 'DELETE_BLOG':{
+    case 'DELETE_BLOG': {
       const blog = action.data
       const blogIndex = state.findIndex(currentBlog => currentBlog.id === blog.id)
       return [
         ...state.slice(0, blogIndex),
+        ...state.slice(blogIndex + 1)
+      ]
+    }
+    case 'ADD_COMMENT': {
+      const blog = action.data
+      const blogIndex = state.findIndex(currentBlog => currentBlog.id === blog.id)
+      return [
+        ...state.slice(0, blogIndex),
+        blog,
         ...state.slice(blogIndex + 1)
       ]
     }
@@ -72,6 +81,16 @@ export const deleteBlog = (blog, userToken) => {
     dispatch({
       type: 'DELETE_BLOG',
       data: blog
+    })
+  }
+}
+
+export const addComment  = (blogID, comment) => {
+  return async (dispatch) => {
+    const updatedBlog = await blogService.addComment(blogID, comment)
+    dispatch({
+      type: 'ADD_COMMENT',
+      data: updatedBlog
     })
   }
 }

@@ -10,7 +10,7 @@ import User from './components/User'
 import Menu from './components/Menu'
 import { Switch, Route, useRouteMatch, Link, useHistory } from 'react-router-dom'
 import { setNotification } from './reducers/notificationReducer'
-import { createBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
+import { createBlog, initializeBlogs, likeBlog, deleteBlog, addComment } from './reducers/blogReducer'
 import { setUser, login } from './reducers/userReducer'
 import { initializeUsers } from './reducers/usersReducer'
 
@@ -70,6 +70,10 @@ const App = () => {
     }
   }
 
+  const createComment = async (blogID, comment) => {
+    dispatch(addComment(blogID, comment, user.token))
+  }
+
   const userMatch = useRouteMatch('/users/:id')
   const matchedUser = userMatch ?
     users.find(user => user.id === userMatch.params.id)
@@ -122,6 +126,7 @@ const App = () => {
             likeBlog={() => dispatch(likeBlog(matchedBlog))}
             removeBlog={removeBlog}
             allowRemove={matchedBlog && matchedBlog.user ? user.username === matchedBlog.user.username : false}
+            addComment={createComment}
           >
           </Blog>
         </Route>
