@@ -5,7 +5,8 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
-import { Switch, Route } from 'react-router-dom'
+import User from './components/User'
+import { Switch, Route, useRouteMatch, Link } from 'react-router-dom'
 import { setNotification } from './reducers/notificationReducer'
 import { createBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { setUser, login } from './reducers/userReducer'
@@ -65,6 +66,11 @@ const App = () => {
     }
   }
 
+  const userMatch = useRouteMatch('/users/:id')
+  const matchedUser = userMatch ?
+    users.find(user => user.id === userMatch.params.id)
+    : null
+
   if (user === null) {
     return (
       <div>
@@ -88,6 +94,9 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
       </p>
       <Switch>
+        <Route path='/users/:id'>
+          <User user={matchedUser}></User>
+        </Route>
         <Route path='/users'>
           <h2>Users</h2>
           <table>
@@ -95,7 +104,7 @@ const App = () => {
               <tr><th></th><th>blogs created</th></tr>
               {users.map(user =>
                 <tr key={user.name}>
-                  <td>{user.name}</td>
+                  <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
                   <td>{user.blogs.length}</td>
                 </tr>
               )}
