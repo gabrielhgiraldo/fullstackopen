@@ -5,13 +5,16 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import { Switch, Route } from 'react-router-dom'
 import { setNotification } from './reducers/notificationReducer'
 import { createBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { setUser, login } from './reducers/userReducer'
+import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
+  const users = useSelector(state => state.users)
   const user = useSelector(state => state.user)
   const notification = useSelector(state => state.notification)
 
@@ -21,6 +24,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [])
 
   useEffect(() => {
@@ -83,20 +87,38 @@ const App = () => {
       <p>{user.name} logged in
         <button onClick={handleLogout}>logout</button>
       </p>
-      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-        <BlogForm
-          createBlog={addBlog}
-        />
-      </Togglable>
-      {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          likeBlog={() => dispatch(likeBlog(blog))}
-          removeBlog={removeBlog}
-          allowRemove={blog.user ? user.username === blog.user.username : false}
-        />
-      )}
+      <Switch>
+        <Route path='/users'>
+          <h2>Users</h2>
+          <table>
+            <tbody>
+              <tr><th></th><th>blogs created</th></tr>
+              {users.map(user =>
+                <tr key={user.name}>
+                  <td>{user.name}</td>
+                  <td>{user.blogs.length}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </Route>
+        <Route path='/'>
+          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+            <BlogForm
+              createBlog={addBlog}
+            />
+          </Togglable>
+          {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likeBlog={() => dispatch(likeBlog(blog))}
+              removeBlog={removeBlog}
+              allowRemove={blog.user ? user.username === blog.user.username : false}
+            />
+          )}
+        </Route>
+      </Switch>
     </div>
   )
 }
