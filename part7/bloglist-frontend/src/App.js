@@ -7,6 +7,7 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import User from './components/User'
+import Menu from './components/Menu'
 import { Switch, Route, useRouteMatch, Link, useHistory } from 'react-router-dom'
 import { setNotification } from './reducers/notificationReducer'
 import { createBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
@@ -95,10 +96,8 @@ const App = () => {
   return (
     <div>
       <Notification notification={notification}/>
-      <h2>blogs</h2>
-      <p>{user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </p>
+      <Menu user={user} handleLogout={handleLogout}></Menu>
+      <h2>blog app</h2>
       <Switch>
         <Route path='/users/:id'>
           <User user={matchedUser}></User>
