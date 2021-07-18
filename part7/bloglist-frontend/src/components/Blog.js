@@ -14,8 +14,14 @@ const Blog = ({ blog, allowRemove, likeBlog, removeBlog }) => {
         likes {blog.likes}
         <button onClick={() => likeBlog(blog)}>like</button>
       </div>
-      <div>{blog.user ? blog.user.name : ''}</div>
+      <div>{blog.user ? `added by ${blog.user.name}` : ''}</div>
       <button onClick={() => removeBlog(blog)} style={showRemove}>remove</button>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map(comment =>
+          <li key={new Date().getTime()}>{comment}</li>
+        )}
+      </ul>
     </>
   )
 }
