@@ -1,46 +1,23 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 
-const Blog = ({ blog, likeBlog, removeBlog, allowRemove }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
+const Blog = ({ blog, allowRemove, likeBlog, removeBlog }) => {
+  const showRemove = { display: allowRemove ? '' : 'none' }
+  if (!blog) {
+    return null
   }
 
-  const [visible, setVisible] = useState(false)
-  const buttonLabel = visible ? 'hide' : 'view'
-  const showWhenVisible = { display: visible ? '' : 'none' }
-  const toggleVisibility = () => setVisible(!visible)
-
-  const showRemove = { display: allowRemove ? '' : 'none' }
-
   return (
-    <div style={blogStyle} className='blog'>
+    <>
+      <h2>{blog.title} {blog.author}</h2>
+      <a href={blog.url}>{blog.url}</a>
       <div>
-        {blog.title} {blog.author}
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
+        likes {blog.likes}
+        <button onClick={() => likeBlog(blog)}>like</button>
       </div>
-      <div style={showWhenVisible} className='details'>
-        <div>{blog.url}</div>
-        <div>
-          likes {blog.likes}
-          <button onClick={() => likeBlog(blog)}>like</button>
-        </div>
-        <div>{blog.user ? blog.user.name : ''}</div>
-        <button onClick={() => removeBlog(blog)} style={showRemove}>remove</button>
-      </div>
-    </div>
+      <div>{blog.user ? blog.user.name : ''}</div>
+      <button onClick={() => removeBlog(blog)} style={showRemove}>remove</button>
+    </>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  likeBlog: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired,
-  allowRemove: PropTypes.bool.isRequired
 }
 
 export default Blog

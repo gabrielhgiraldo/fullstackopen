@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Blog from './components/Blog'
+import BlogItem from './components/BlogItem'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import User from './components/User'
-import { Switch, Route, useRouteMatch, Link } from 'react-router-dom'
+import { Switch, Route, useRouteMatch, Link, useHistory } from 'react-router-dom'
 import { setNotification } from './reducers/notificationReducer'
 import { createBlog, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { setUser, login } from './reducers/userReducer'
@@ -14,6 +15,7 @@ import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const blogs = useSelector(state => state.blogs)
   const users = useSelector(state => state.users)
   const user = useSelector(state => state.user)
@@ -63,6 +65,7 @@ const App = () => {
   const removeBlog = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       dispatch(deleteBlog(blog, user.token))
+      history.push('/')
     }
   }
 
@@ -70,7 +73,10 @@ const App = () => {
   const matchedUser = userMatch ?
     users.find(user => user.id === userMatch.params.id)
     : null
-
+  const blogMatch = useRouteMatch('/blogs/:id')
+  const matchedBlog = blogMatch ?
+    blogs.find(blog => blog.id === blogMatch.params.id)
+    : null
   if (user === null) {
     return (
       <div>
@@ -111,6 +117,15 @@ const App = () => {
             </tbody>
           </table>
         </Route>
+        <Route path='/blogs/:id'>
+          <Blog
+            blog={matchedBlog}
+            likeBlog={() => dispatch(likeBlog(matchedBlog))}
+            removeBlog={removeBlog}
+            allowRemove={matchedBlog && matchedBlog.user ? user.username === matchedBlog.user.username : false}
+          >
+          </Blog>
+        </Route>
         <Route path='/'>
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
             <BlogForm
@@ -118,12 +133,9 @@ const App = () => {
             />
           </Togglable>
           {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-            <Blog
+            <BlogItem
               key={blog.id}
               blog={blog}
-              likeBlog={() => dispatch(likeBlog(blog))}
-              removeBlog={removeBlog}
-              allowRemove={blog.user ? user.username === blog.user.username : false}
             />
           )}
         </Route>
