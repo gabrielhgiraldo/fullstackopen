@@ -1,14 +1,14 @@
 import React from 'react'
+import { Alert } from 'react-bootstrap'
 
 const Notification = ({ notification }) => {
   if (notification) {
     return (
-      <div className={notification.type}>{notification.message}</div>
+      <Alert variant={notification.type}>{notification.message}</Alert>
     )
   }
-  else {
-    return ''
-  }
+
+  return ''
 }
 
 export default Notification

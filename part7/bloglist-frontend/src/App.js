@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Table } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import BlogItem from './components/BlogItem'
@@ -84,7 +85,7 @@ const App = () => {
     : null
   if (user === null) {
     return (
-      <div>
+      <div className="container">
         <Notification notification={notification}/>
         <LoginForm
           handleSubmit={handleLogin}
@@ -98,53 +99,55 @@ const App = () => {
   }
 
   return (
-    <div>
+    <>
       <Notification notification={notification}/>
       <Menu user={user} handleLogout={handleLogout}></Menu>
-      <h2>blog app</h2>
-      <Switch>
-        <Route path='/users/:id'>
-          <User user={matchedUser}></User>
-        </Route>
-        <Route path='/users'>
-          <h2>Users</h2>
-          <table>
-            <tbody>
-              <tr><th></th><th>blogs created</th></tr>
-              {users.map(user =>
-                <tr key={user.name}>
-                  <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
-                  <td>{user.blogs.length}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </Route>
-        <Route path='/blogs/:id'>
-          <Blog
-            blog={matchedBlog}
-            likeBlog={() => dispatch(likeBlog(matchedBlog))}
-            removeBlog={removeBlog}
-            allowRemove={matchedBlog && matchedBlog.user ? user.username === matchedBlog.user.username : false}
-            addComment={createComment}
-          >
-          </Blog>
-        </Route>
-        <Route path='/'>
-          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-            <BlogForm
-              createBlog={addBlog}
-            />
-          </Togglable>
-          {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-            <BlogItem
-              key={blog.id}
-              blog={blog}
-            />
-          )}
-        </Route>
-      </Switch>
-    </div>
+      <div className="container">
+        <h2>blog app</h2>
+        <Switch>
+          <Route path='/users/:id'>
+            <User user={matchedUser}></User>
+          </Route>
+          <Route path='/users'>
+            <h2>Users</h2>
+            <Table striped>
+              <tbody>
+                <tr><th></th><th>blogs created</th></tr>
+                {users.map(user =>
+                  <tr key={user.name}>
+                    <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
+                    <td>{user.blogs.length}</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </Route>
+          <Route path='/blogs/:id'>
+            <Blog
+              blog={matchedBlog}
+              likeBlog={() => dispatch(likeBlog(matchedBlog))}
+              removeBlog={removeBlog}
+              allowRemove={matchedBlog && matchedBlog.user ? user.username === matchedBlog.user.username : false}
+              addComment={createComment}
+            >
+            </Blog>
+          </Route>
+          <Route path='/'>
+            <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+              <BlogForm
+                createBlog={addBlog}
+              />
+            </Togglable>
+            {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
+              <BlogItem
+                key={blog.id}
+                blog={blog}
+              />
+            )}
+          </Route>
+        </Switch>
+      </div>
+    </>
   )
 }
 

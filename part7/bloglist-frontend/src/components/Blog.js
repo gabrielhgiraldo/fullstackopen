@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button, ListGroup } from 'react-bootstrap'
 
 const Blog = ({ blog, allowRemove, likeBlog, removeBlog, addComment }) => {
   const showRemove = { display: allowRemove ? '' : 'none' }
@@ -17,18 +18,18 @@ const Blog = ({ blog, allowRemove, likeBlog, removeBlog, addComment }) => {
       <a href={blog.url}>{blog.url}</a>
       <div>
         likes {blog.likes}
-        <button onClick={() => likeBlog(blog)}>like</button>
+        <Button onClick={() => likeBlog(blog)}>like</Button>
       </div>
       <div>{blog.user ? `added by ${blog.user.name}` : ''}</div>
-      <button onClick={() => removeBlog(blog)} style={showRemove}>remove</button>
+      <Button onClick={() => removeBlog(blog)} style={showRemove}>remove</Button>
       <h3>comments</h3>
       <input type="text" id="comment"></input>
-      <button onClick={createComment}>add comment</button>
-      <ul>
+      <Button onClick={createComment}>add comment</Button>
+      <ListGroup>
         {blog.comments.map(comment =>
-          <li key={new Date().getTime()}>{comment}</li>
+          <ListGroup.Item key={new Date().getTime()}>{comment}</ListGroup.Item>
         )}
-      </ul>
+      </ListGroup>
     </>
   )
 }
