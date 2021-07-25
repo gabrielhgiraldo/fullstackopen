@@ -6,9 +6,7 @@ const Authors = ({ show, authors }) => {
   const [ name, setName ] = useState('')
   const [ born, setBorn ] = useState('')
 
-  const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
-    refetchQueries: [ { query: ALL_DATA } ]
-  })
+  const [ editAuthor ] = useMutation(EDIT_AUTHOR)
 
   const submit = (event) => {
     event.preventDefault()
