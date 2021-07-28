@@ -56,22 +56,22 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => Book.collection.countDocuments(),
-    authorCount: () => Author.collection.countDocuments(),
+    bookCount: () => Book.countDocuments(),
+    authorCount: () => Author.countDocuments(),
     allBooks: (root, args) => {
       // let returnedBooks = await Book.find({})
       // if (args.author) {
       //   returnedBooks = returnedBooks.filter(book => book.author === args.author)
       // }
-      // if (args.genre) {
-      //   returnedBooks = returnedBooks.filter(book => book.genres.includes(args.genre))
-      // }
-      return Book.find({}).populate('author', { 'name': 1, 'born': 1 })
+      if (args.genre) {
+        return Book.find({ genres: args.genre }).populate('author', { name: 1, born: 1 })
+      }
+      return Book.find({}).populate('author', { name: 1, born: 1 })
     },
     allAuthors: () => Author.find({})
   },
   Author: {
-    // bookCount: (root) => books.filter(book => book.author === root.name).length
+    bookCount:  (root) => Book.countDocuments({ "author": root._id })
   },
   Mutation: {
     addBook: async (root, args) => {
@@ -85,8 +85,8 @@ const resolvers = {
       const book = new Book({ ...args })
       return book.save()
     },
-    editAuthor: async (root, args) => {
-      return await Author.findOneAndUpdate({ name: args.name }, { born: args.setBornTo })
+    editAuthor: (root, args) => {
+      return Author.findOneAndUpdate({ name: args.name }, { born: args.setBornTo })
     }
   }
 }
