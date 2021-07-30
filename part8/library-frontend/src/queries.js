@@ -17,6 +17,7 @@ export const ALL_DATA = gql`
         id
       }
       id
+      genres
     }
   }
 `

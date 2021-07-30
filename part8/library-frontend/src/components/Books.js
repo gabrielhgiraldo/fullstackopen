@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const Books = ({ show, books}) => {
+const Books = ({ show, books }) => {
+  const genres = [...new Set(books.map(book => book.genres).flat())]
+  const [selectedGenre, setGenre] = useState(genres[0])
+
   if (!show) {
     return null
   }
@@ -8,7 +11,7 @@ const Books = ({ show, books}) => {
   return (
     <div>
       <h2>books</h2>
-
+      in genre <b>{selectedGenre}</b>
       <table>
         <tbody>
           <tr>
@@ -20,7 +23,7 @@ const Books = ({ show, books}) => {
               published
             </th>
           </tr>
-          {books.map(a =>
+          {books.filter(book => book.genres.includes(selectedGenre)).map(a =>
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
@@ -29,6 +32,9 @@ const Books = ({ show, books}) => {
           )}
         </tbody>
       </table>
+      {genres.map(genre => 
+        <button key={genre} onClick={() => setGenre(genre)}>{genre}</button>
+      )}
     </div>
   )
 }
