@@ -66,7 +66,7 @@ const App = () => {
         show={page === 'add'}
       />
       {page === 'recommend' &&
-        <FavoriteBooks books={result.data.allBooks} />
+        <FavoriteBooks/>
       }
 
       {page === 'login' &&
