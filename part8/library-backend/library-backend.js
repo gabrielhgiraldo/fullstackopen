@@ -151,7 +151,7 @@ const resolvers = {
           invalidArgs: args
         })
       }
-      return { ...book.toObject(), author }
+      return { ...book.toObject(), author, id: book._id }
     },
     editAuthor: (root, args, context) => {
       if (!context.currentUser) {
