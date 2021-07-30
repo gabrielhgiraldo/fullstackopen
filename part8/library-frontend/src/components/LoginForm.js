@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react'
 
 import { LOGIN } from '../queries'
 
-const LoginForm = ({ setToken, setError }) => {
+const LoginForm = ({ setToken, setError, setUser }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
+  
   const [ login, result ] = useMutation(LOGIN, {
     onError: (error) => {
       setError(error.graphQLErrors[0].message)
