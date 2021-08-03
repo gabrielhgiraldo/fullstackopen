@@ -15,10 +15,26 @@ const App = () => {
 
   const result = useQuery(ALL_DATA)
   const client = useApolloClient()
+
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => set.map(p => p.id).includes(object.id)  
+    const dataInStore = client.readQuery({ query: ALL_DATA })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_DATA,
+        data: {
+          ...dataInStore,
+          ALL_BOOKS: [...dataInStore.allBooks, addedBook]
+        }
+      })
+    }
+  }
+
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      const book = subscriptionData.data.bookAdded
-      window.alert(`new book ${book.title} by ${book.author.name}`)
+      const addedBook = subscriptionData.data.bookAdded
+      window.alert(`new book ${addedBook.title} by ${addedBook.author.name}`)
+      updateCacheWith(addedBook)
     }
   })
 
@@ -70,6 +86,7 @@ const App = () => {
 
       <NewBook
         show={page === 'add'}
+        updateCacheWith={updateCacheWith}
       />
       {page === 'recommend' &&
         <FavoriteBooks/>
