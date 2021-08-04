@@ -43,6 +43,7 @@ const typeDefs = gql`
     id: ID!
     born: Int
     bookCount: Int
+    books: [Book!]
   }
 
   type Book {
@@ -100,11 +101,11 @@ const resolvers = {
       }
       return Book.find({}).populate('author')
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: () => Author.find({}).populate('books'),
     me: (root, args, context) => context.currentUser
   },
   Author: {
-    bookCount:  (root) => Book.countDocuments({ "author": root._id })
+    bookCount: async (root) => root.books.length
   },
   Mutation: {
     createUser: async (root, args) => {
@@ -140,23 +141,18 @@ const resolvers = {
       if (!context.currentUser) {
         throw new AuthenticationError("not authenticated")
       }
-      // add author to database if author doesn't exist
+      const book = new Book({ ...args })
+
       let author = await Author.findOne({ name: args.author })
       if (!author) {
         author = new Author({ name: args.author })
-        try {
-          await author.save()
-        }
-        catch (error) {
-          throw new UserInputError(error.message, {
-            invalidArgs: args
-          })
-        }
       }
+      author.books = [book._id]
 
-      const book = new Book({ ...args, author: author._id })
+      book.author = author._id
       try {
         await book.save()
+        await author.save()
       }
       catch (error) {
         throw new UserInputError(error.message, {
