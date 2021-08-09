@@ -1,0 +1,16 @@
+{
+  "name": "nine-to-seven",
+  "version": "0.0.1",
+  "description": "part9 exercises one to seven",
+  "main": "index.js",
+  "scripts": {
+    "ts-node": "ts-node",
+    "calculateBMI": "ts-node bmiCalculator.ts"
+  },
+  "author": "Gabriel Giraldo-Wingler",
+  "license": "MIT",
+  "dependencies": {
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  }
+}
