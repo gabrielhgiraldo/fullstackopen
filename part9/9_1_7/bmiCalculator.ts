@@ -2,14 +2,15 @@ interface HeightWeight {
     height: number
     weight: number
 }
-// export const validateHeightWeight = (height: string, weight: string) => {
-//     !isNaN(Number(args[2])) && !isNaN(Number(args[3]))
-// }
+export const validHeightWeight = (height: any, weight: any): boolean => {
+    return !isNaN(Number(height)) && !isNaN(Number(weight))
+}
+
 const parseBmiArguments = (args: Array<string>): HeightWeight => {
     if (args.length < 4) throw new Error('Not enough arguments')
     if (args.length > 4) throw new Error('Too many arguments')
 
-    if(!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    if(validHeightWeight(args[2], args[3])) {
         return { 
             height: Number(args[2]),
             weight: Number(args[3])
