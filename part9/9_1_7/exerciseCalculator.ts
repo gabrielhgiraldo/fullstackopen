@@ -8,6 +8,26 @@ interface Result {
     average: number
 }
 
+interface ExerciseValues {
+    dailyExerciseHours: Array<number>
+    target: number
+}
+
+const parseExerciseArguments = (args: Array<string>): ExerciseValues=> {
+    if (args.length < 4) throw new Error('Not enough arguments')
+
+    const [arg0, arg1, arg2, ...rest] = args
+    if (!isNaN(Number(arg2)) && rest.every(val => !isNaN(Number(val)))) {
+        return {
+            target: Number(arg2),
+            dailyExerciseHours: rest.map(val => Number(val))
+        }
+    }
+    else {
+        throw new Error('provided values were not numbers!')
+    }
+}
+
 const calculateExercises = (dailyExerciseHours: Array<number>, target: number): Result => {
     const periodLength = dailyExerciseHours.length
     const trainingDays = dailyExerciseHours.reduce((acc, val) => val > 0 ? acc + 1 : acc, 0)
@@ -39,4 +59,10 @@ const calculateExercises = (dailyExerciseHours: Array<number>, target: number): 
     }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+    const { target, dailyExerciseHours } = parseExerciseArguments(process.argv)
+    console.log(calculateExercises(dailyExerciseHours, target))
+}
+catch (error) {
+    console.log('Error, something bad happened, message: ', error.message)
+}
