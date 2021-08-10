@@ -1,4 +1,4 @@
-import { Diagnoses } from "../src/types"
+import { Diagnoses } from "../src/types";
 
 const diagnoses: Array<Diagnoses> = [
   {
@@ -82,6 +82,6 @@ const diagnoses: Array<Diagnoses> = [
     "code": "J12.82",
     "name": "Pneumonia due to coronavirus disease"
   }
-]
+];
 
-export default diagnoses
+export default diagnoses;

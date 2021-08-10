@@ -24,8 +24,8 @@
       "no-case-declarations": "off"
     },
     "parser": "@typescript-eslint/parser",
-    // "parserOptions": {
-    //   "project": "./tsconfig.json"
-    // }
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    }
   }
   
