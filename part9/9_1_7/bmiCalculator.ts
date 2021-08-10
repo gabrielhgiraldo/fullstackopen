@@ -2,8 +2,8 @@ interface HeightWeight {
     height: number;
     weight: number;
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const validHeightWeight = (height: any, weight: any): boolean => {
+
+export const validHeightWeight = (height: unknown, weight: unknown): boolean => {
     return !isNaN(Number(height)) && !isNaN(Number(weight));
 };
 
