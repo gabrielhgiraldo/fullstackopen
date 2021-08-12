@@ -61,7 +61,6 @@ const isEntries = (entries: Array<unknown>): entries is Array<Entry> => {
 
 const parseEntries = (entries: unknown): Array<Entry> => {
     if(!entries || !Array.isArray(entries) || !isEntries(entries)) {
-        console.log(entries);
         throw new Error(`Incorrect or missing entries: ${entries}`);
     }
     return entries;

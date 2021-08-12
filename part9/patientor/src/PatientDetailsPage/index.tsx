@@ -5,6 +5,7 @@ import { Container, Icon } from 'semantic-ui-react';
 import { apiBaseUrl } from '../constants';
 import { updatePatient, useStateValue } from '../state';
 import { Patient } from '../types';
+import Entries from './Entries';
 
 const PatientDetailsPage = (): JSX.Element => {
     const [{ patients }, dispatch] = useStateValue();
@@ -23,15 +24,18 @@ const PatientDetailsPage = (): JSX.Element => {
             void fetchPatient();
         }
     },[dispatch]);
-
+    if (!patients[id].ssn) {
+        return <></>;
+    }
     return (
         <Container>
             <h1>
                 {patients[id].name}
-                <Icon name={patients[id].gender === 'male'?'mars': 'venus'}></Icon>
+                <Icon name={patients[id].gender === 'male'? 'mars' : 'venus'}></Icon>
             </h1>
             <div>ssn: {patients[id].ssn}</div>
             <div>occupation: {patients[id].occupation}</div>
+            <Entries entries={patients[id].entries}/>
         </Container>
     );
 };
