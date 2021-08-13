@@ -1,26 +1,20 @@
 import React from 'react';
-import { useStateValue } from '../state';
+import { Card } from 'semantic-ui-react';
 import { Entry } from '../types';
+import EntryDetails from './EntryDetails';
 
 const Entries = ({ entries }: { entries: Entry[] }): JSX.Element => {
-    const [{ diagnoses },] = useStateValue();
-
     if (!entries.length) {
         return <></>;
     }
     return (
         <>
         <h2>entries</h2>
-        {entries.map(entry => 
-            <div key={entry.id}>
-                {entry.date} <i>{entry.description}</i>
-                <ul>
-                    {entry.diagnosisCodes && entry.diagnosisCodes.map(code => 
-                        <li key={code}>{code} <i>{diagnoses[code].name}</i></li>
-                    )}
-                </ul>
-            </div>
-        )}
+        <Card.Group>
+            {entries.map(entry => 
+                <EntryDetails entry={entry} key={entry.id}/>
+            )}
+        </Card.Group>
         </>
     );
 };
