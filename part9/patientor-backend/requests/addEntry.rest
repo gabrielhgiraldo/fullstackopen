@@ -1,0 +1,47 @@
+# Hospital
+
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+    "type":"Hospital",
+    "date": "2012-09-12",
+    "specialist": "doc doctor",
+    "description":"test test",
+    "diagnosisCodes": ["M51.2"],
+    "discharge":{
+        "date": "2012-09-20",
+        "criteria":"healed"
+    }
+}
+
+### HealthCheck
+
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+    "type":"HealthCheck",
+    "date": "2012-09-12",
+    "specialist": "doc doctor",
+    "description":"test test",
+    "diagnosisCodes": ["M51.2"],
+    "healthCheckRating":3
+}
+
+### Occupational HealthCare
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+    "type":"OccupationalHealthcare",
+    "date": "2012-09-12",
+    "specialist": "doc doctor",
+    "description":"test test",
+    "diagnosisCodes": ["M51.2"],
+    "employerName":"Kaiba Corp",
+    "sickLeave": {
+        "startDate": "2012-10-19",
+        "endDate": "2012-10-25"
+    }
+}

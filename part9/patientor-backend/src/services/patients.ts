@@ -1,5 +1,11 @@
 import patients from "../../data/patients";
-import { NewPatient, Patient, PublicPatient } from "../types";
+import { 
+    NewPatient,
+    Patient,
+    PublicPatient,
+    Entry,
+    NewEntry
+} from "../types";
 import { v1 as uuid } from 'uuid';
 
 const getAll = (): PublicPatient[] => {
@@ -23,15 +29,32 @@ const addPatient = (patient: NewPatient): Patient => {
 
 const getPatient = (id: string): Patient => {
     const patient = patients.find(patient => patient.id === id);
-    if (patient) {
-        return patient;
-    }
-    
-    throw new Error('patient not found, check id.');
+    if (!patient) throw new Error('patient not found, check id');
+
+    return patient;
+};
+
+const addPatientEntry = (id: string, entry: NewEntry): Entry => {
+    const patientIndex = patients.findIndex(patient => patient.id === id);
+    if (patientIndex === -1) throw new Error('patient not found, check id');
+    const newEntry = {
+        ...entry,
+        id: uuid()
+    };
+
+    patients[patientIndex] = {
+        ...patients[patientIndex],
+        entries: [
+            ...patients[patientIndex].entries,
+            newEntry
+        ]
+    };
+    return newEntry;
 };
 
 export default {
     getAll,
     addPatient,
-    getPatient
+    getPatient,
+    addPatientEntry
 };
