@@ -5,7 +5,7 @@ import { HealthCheckEntry } from '../types';
 
 const HealthCheckEntryDetails= ({ entry }: { entry: HealthCheckEntry }): JSX.Element => {
     const [{ diagnoses },] = useStateValue();
-    const ratingColors: Array<SemanticCOLORS> = ["green","yellow", "orange", "red"];
+    const ratingColors: Array<SemanticCOLORS> = ["green", "yellow", "orange", "red"];
     return (
     <Card fluid>
         <Card.Content>        

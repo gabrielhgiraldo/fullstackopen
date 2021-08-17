@@ -4,7 +4,8 @@ import { useParams } from 'react-router-dom';
 import { Container, Icon } from 'semantic-ui-react';
 import { apiBaseUrl } from '../constants';
 import { updatePatient, useStateValue } from '../state';
-import { Patient } from '../types';
+import { Entry, Patient } from '../types';
+import { EntryFormValues } from './AddEntryForm';
 import Entries from './Entries';
 
 const PatientDetailsPage = (): JSX.Element => {
@@ -24,6 +25,24 @@ const PatientDetailsPage = (): JSX.Element => {
             void fetchPatient();
         }
     },[dispatch]);
+
+    const submitNewEntry = async (values: EntryFormValues) => {
+        try {
+            const {data: newEntry} = await axios.post<Entry>(`${apiBaseUrl}/patients/${id}/entries`, values);
+            const updatedPatient = {
+                ...patients[id],
+                entries: [
+                    ...patients[id].entries,
+                    newEntry
+                ]
+            };
+            dispatch(updatePatient(updatedPatient));
+        } catch (e) {
+        console.error(e.response?.data || 'Unknown Error');
+        // setError(e.response?.data?.error || 'Unknown error');
+      }
+    };
+
     if (!patients[id].ssn) {
         return <></>;
     }
@@ -35,7 +54,9 @@ const PatientDetailsPage = (): JSX.Element => {
             </h1>
             <div>ssn: {patients[id].ssn}</div>
             <div>occupation: {patients[id].occupation}</div>
-            <Entries entries={patients[id].entries}/>
+            <Entries 
+                entries={patients[id].entries}
+                onSubmit={submitNewEntry}/>
         </Container>
     );
 };

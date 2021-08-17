@@ -26,7 +26,7 @@ Content-Type: application/json
     "specialist": "doc doctor",
     "description":"test test",
     "diagnosisCodes": ["M51.2"],
-    "healthCheckRating":3
+    "healthCheckRating":0
 }
 
 ### Occupational HealthCare
