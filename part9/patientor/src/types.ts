@@ -33,12 +33,14 @@ export interface OccupationalHealthCareEntry extends BaseEntry {
   }
 }
 
+export type Discharge = {
+  date: string,
+  criteria: string
+};
+
 export interface HospitalEntry extends BaseEntry {
   type: EntryType.Hospital,
-  discharge: {
-      date: string,
-      criteria: string,
-  },
+  discharge: Discharge,
 }
 
 export enum HealthCheckRating {

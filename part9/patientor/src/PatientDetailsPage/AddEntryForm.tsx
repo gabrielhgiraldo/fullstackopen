@@ -2,7 +2,7 @@ import { Field, Form, Formik } from 'formik';
 import moment from 'moment';
 import React from 'react';
 import { Button } from 'semantic-ui-react';
-import { DiagnosisSelection, NumberField, TextField } from '../AddPatientModal/FormField';
+import { DiagnosisSelection, NumberField, SelectField, TextField, Option } from '../AddPatientModal/FormField';
 import { useStateValue } from '../state';
 import { EntryType, NewEntry } from '../types';
 import { assertNever } from '../utils';
@@ -13,6 +13,13 @@ type Props = {
     onSubmit: (values: EntryFormValues) => void,
     onCancel: () => void
 };
+
+
+const typeOptions: Option[] = [
+    { value: EntryType.HealthCheck, label: EntryType.HealthCheck },
+    { value: EntryType.Hospital, label: EntryType.Hospital },
+    { value: EntryType.OccupationalHealthcare, label: EntryType.OccupationalHealthcare }
+];
 
 const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
     const [{ diagnoses }] = useStateValue();
@@ -32,7 +39,9 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         const requiredError = "Field is required";
         const formatError = "Field is formatted incorrectly";
 
-        const errors: { [field: string]: string } = {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const errors: {[field: string]: any} = {};
+
         if (!values.date) {
             errors.date = requiredError;
         }
@@ -53,7 +62,23 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                 }
                 break;
             case EntryType.Hospital:
-                console.log("hospital");
+                if (values.discharge) {
+                    errors.discharge = {};
+                    if (!values.discharge.date) {
+                        errors.discharge.date = requiredError;
+                    }
+                    else if (!moment(values.discharge.date, "MM-DD-YYYY", true).isValid()) {
+                        errors.discharge.date = formatError;
+                    }
+
+                    if (!values.discharge.criteria) {
+                        errors.discharge.criteria = requiredError;
+                    }
+                    // necessary for isValid check to pass
+                    if (Object.keys(errors.discharge).length === 0){
+                        delete errors.discharge;
+                    }
+                }
                 break;
             case EntryType.OccupationalHealthcare:
                 console.log("occupationalHealthcare");
@@ -64,10 +89,15 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({ isValid, dirty, setFieldValue, setFieldTouched, values }) => {
   
         return (
           <Form className="form ui">
+            <SelectField
+                name="type"
+                label="type"
+                options={typeOptions}
+            />
             <Field
                 label="date"
                 placeholder="mm-dd-yyyy"
@@ -86,14 +116,27 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                 name="description"
                 component={TextField}
             />
-            <Field
+            {values.type === EntryType.HealthCheck && <Field
                 name="healthCheckRating"
                 label="health check rating"
                 placeholder={0}
                 component={NumberField}
                 min={0}
                 max={3}
-            />
+            />}
+            {values.type === EntryType.Hospital && <Field
+                name="discharge.date"
+                label="discharge date"
+                placeholder="mm-dd-yyyy"
+                component={TextField}
+            />}
+            {values.type === EntryType.Hospital && <Field
+                name="discharge.criteria"
+                label="discharge criteria"
+                placeholder="criteria"
+                component={TextField}
+            />}
+
             <DiagnosisSelection
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
