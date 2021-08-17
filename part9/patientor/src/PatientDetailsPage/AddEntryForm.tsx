@@ -1,9 +1,11 @@
 import { Field, Form, Formik } from 'formik';
+import moment from 'moment';
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 import { DiagnosisSelection, NumberField, TextField } from '../AddPatientModal/FormField';
 import { useStateValue } from '../state';
 import { EntryType, NewEntry } from '../types';
+import { assertNever } from '../utils';
 
 export type EntryFormValues = NewEntry;
 
@@ -18,7 +20,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
     return (
       <Formik
       initialValues={{
-          date: (new Date()).toLocaleDateString(),
+          date: '',
           specialist: '',
           description: '',
           healthCheckRating: 0,
@@ -28,12 +30,36 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
       onSubmit={onSubmit}
       validate={values => {
         const requiredError = "Field is required";
+        const formatError = "Field is formatted incorrectly";
+
         const errors: { [field: string]: string } = {};
+        if (!values.date) {
+            errors.date = requiredError;
+        }
+        else if (!moment(values.date, "MM-DD-YYYY", true).isValid()) {
+            errors.date = formatError;
+        }
+
         if (!values.specialist) {
             errors.specialist = requiredError;
         }
         if (!values.description) {
             errors.description = requiredError;
+        }
+        switch(values.type) {
+            case EntryType.HealthCheck:
+                if (values.healthCheckRating !== 0 && !values.healthCheckRating){
+                    errors.healthCheckRating = requiredError;
+                }
+                break;
+            case EntryType.Hospital:
+                console.log("hospital");
+                break;
+            case EntryType.OccupationalHealthcare:
+                console.log("occupationalHealthcare");
+                break;
+            default:
+                assertNever(values);
         }
         return errors;
       }}
@@ -42,6 +68,12 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
   
         return (
           <Form className="form ui">
+            <Field
+                label="date"
+                placeholder="mm-dd-yyyy"
+                name="date"
+                component={TextField}
+            />
             <Field
                 label="specialist"
                 placeholder="specialist"
