@@ -81,7 +81,30 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                 }
                 break;
             case EntryType.OccupationalHealthcare:
-                console.log("occupationalHealthcare");
+                if (!values.employerName) {
+                    errors.employerName = requiredError;
+                }
+
+                if (values.sickLeave) {
+                    errors.sickLeave = {};
+                    if (values.sickLeave.endDate && !values.sickLeave.startDate) {
+                        errors.sickLeave.startDate = requiredError;
+                    }
+                    else if (values.sickLeave.startDate && !moment(values.sickLeave.startDate, 'MM-DD-YYYY', true).isValid()) {
+                        errors.sickLeave.startDate = formatError;
+                    }
+
+                    if (values.sickLeave.startDate && !values.sickLeave.endDate) {
+                        errors.sickLeave.endDate = requiredError;
+                    }
+                    else if (values.sickLeave.endDate && !moment(values.sickLeave.endDate, 'MM-DD-YYYY', true).isValid()) {
+                        errors.sickLeave.endDate = formatError;
+                    }
+
+                    if (Object.keys(errors.sickLeave).length === 0) {
+                        delete errors.sickLeave;
+                    }
+                }
                 break;
             default:
                 assertNever(values);
@@ -136,6 +159,25 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                 placeholder="criteria"
                 component={TextField}
             />}
+            {values.type === EntryType.OccupationalHealthcare && <Field
+                name="employerName"
+                label="employer name"
+                placeholder="employer name"
+                component={TextField}
+            />}
+            {values.type === EntryType.OccupationalHealthcare && <Field
+                name="sickLeave.startDate"
+                label="sick leave start"
+                placeholder="mm/dd/yyyy"
+                component={TextField}
+            />}
+            {values.type === EntryType.OccupationalHealthcare && <Field
+                name="sickLeave.endDate"
+                label="sick leave end"
+                placeholder="mm/dd/yyyy"
+                component={TextField}
+            />}
+
 
             <DiagnosisSelection
               setFieldValue={setFieldValue}
